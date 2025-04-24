@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: telegramQuestionAnswerBot
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mydatabase
+    username: myuser
+    password: secret
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+
+app:
+  telegram:
+    token: ${APP_TELEGRAM_TOKEN:}
+    admins: ${APP_TELEGRAM_ADMINS:}

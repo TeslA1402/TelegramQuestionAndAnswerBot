@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="2025-04-23-14-31-00-changelog" author="tesla1402">
+        <comment>Init</comment>
+        <createTable tableName="client">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_client"/>
+            </column>
+            <column name="chat_id" type="BIGINT">
+                <constraints nullable="false" unique="true" uniqueConstraintName="u_client_chat_id"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="user_name" type="VARCHAR(255)"/>
+            <column name="create_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="question">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_question"/>
+            </column>
+            <column name="text" type="VARCHAR(4096)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="client_questions">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_client_questions"/>
+            </column>
+            <column name="client_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_hours" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="next_send_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="client_questions" indexName="i_client_questions_client_id">
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="client_questions" indexName="i_client_questions_question_id">
+            <column name="question_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="client_questions" baseColumnNames="client_id"
+                                 constraintName="fk_client_questions_client_id"
+                                 referencedTableName="client"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="client_questions" baseColumnNames="question_id"
+                                 constraintName="fk_client_questions_question_id"
+                                 referencedTableName="question"
+                                 referencedColumnNames="id"/>
+        <addUniqueConstraint tableName="client_questions" columnNames="client_id, question_id"
+                             constraintName="u_client_questions_client_id_question_id"/>
+
+        <createTable tableName="answer">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_answer"/>
+            </column>
+            <column name="text" type="VARCHAR(4096)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="answer" indexName="i_answer_client_id">
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="answer" indexName="i_answer_question_id">
+            <column name="question_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="answer" baseColumnNames="client_id"
+                                 constraintName="fk_answer_client_id"
+                                 referencedTableName="client"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="answer" baseColumnNames="question_id"
+                                 constraintName="fk_answer_question_id"
+                                 referencedTableName="question"
+                                 referencedColumnNames="id"/>
+
+        <createTable tableName="message">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_message"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="question_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="timestamptz">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="message" indexName="i_message_client_id">
+            <column name="client_id"/>
+        </createIndex>
+        <createIndex tableName="message" indexName="i_message_question_id">
+            <column name="question_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseTableName="message" baseColumnNames="client_id"
+                                 constraintName="fk_message_client_id"
+                                 referencedTableName="client"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="message" baseColumnNames="question_id"
+                                 constraintName="fk_message_question_id"
+                                 referencedTableName="question"
+                                 referencedColumnNames="id"/>
+        <addUniqueConstraint tableName="message" columnNames="client_id, message_id"
+                             constraintName="u_message_client_id_message_id"/>
+    </changeSet>
+</databaseChangeLog>

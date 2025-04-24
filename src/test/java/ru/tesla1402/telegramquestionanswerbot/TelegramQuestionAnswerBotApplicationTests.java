@@ -1,4 +1,4 @@
-package ru.tesla1402.telegramQuestionAnswerBot;
+package ru.tesla1402.telegramquestionanswerbot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
