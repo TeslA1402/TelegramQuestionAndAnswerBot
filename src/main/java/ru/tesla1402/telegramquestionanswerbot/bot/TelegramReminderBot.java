@@ -59,6 +59,7 @@ public class TelegramReminderBot implements SpringLongPollingBot, LongPollingSin
     private static final String ADD_CLIENT_QUESTION_MESSAGE = "Вопрос добавлен пользователю";
     private static final String INCORRECT_PERIOD_HOURS_MESSAGE = "Некорректный период в часах";
     private static final String CLIENT_QUESTION_DELETED_MESSAGE = "Вопрос клиенту удалён";
+    private static final String CLEINT_QUESTION_MISSING_MESSAGE = "Пока для вас нет вопросов — пожалуйста, подождите немного. Я обязательно напомню, как только появится задание! Спасибо за терпение. \uD83C\uDF3F";
     private final TelegramConfigurationProperties telegramConfigurationProperties;
     private final TelegramClient telegramClient;
     private final ClientService clientService;
@@ -102,8 +103,8 @@ public class TelegramReminderBot implements SpringLongPollingBot, LongPollingSin
             if (messageOptional.isEmpty()) {
                 messageOptional = messageService.findFirstByClientIdOrderByCreateDateDesc(client.getId());
             }
-            messageOptional.ifPresent(m -> answerService.saveAnswer(client.getId(), m.getQuestion().getId(),
-                    message.getText()));
+            messageOptional.ifPresentOrElse(m -> answerService.saveAnswer(client.getId(), m.getQuestion().getId(),
+                    message.getText()), () -> sendMessage(message.getChatId(), CLEINT_QUESTION_MISSING_MESSAGE));
         }
     }
 
