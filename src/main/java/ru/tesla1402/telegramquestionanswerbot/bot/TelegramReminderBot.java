@@ -51,9 +51,6 @@ public class TelegramReminderBot implements SpringLongPollingBot, LongPollingSin
     private static final Pattern REMOVE_QUESTION_FROM_CLIENT_PATTERN = Pattern.compile("^/removeQuestionFromClient (\\d+) (\\d+)$");
     private static final Pattern RESPONSES_PATTERN = Pattern.compile("^/responses (\\d+)$");
 
-    private static final String START_MESSAGE = """
-            Привет! Я буду присылать вам вопросы, а вы должны на них отвечать.\s
-            Все ответы, отправленные с помощью функции ответа в Telegram, будут сохраняться и станут доступны вашему куратору.""";
     private static final String ADD_QUESTION_MESSAGE = "Вопрос добавлен";
     private static final String EXCEPTION_MESSAGE = "Ошибка обработки команды";
     private static final String CLIENT_NOT_FOUND_MESSAGE = "Клиент не найден";
@@ -114,7 +111,7 @@ public class TelegramReminderBot implements SpringLongPollingBot, LongPollingSin
         String text = message.getText();
         Long chatId = message.getChatId();
         if (text.equals("/start")) {
-            sendMessage(chatId, START_MESSAGE);
+            sendMessage(chatId, telegramConfigurationProperties.text().command().start());
         } else if (telegramConfigurationProperties.admins().contains(chatId)) {
             if (text.equals("/admin")) {
                 sendMessage(chatId, ADMIN_MESSAGE);
